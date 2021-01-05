@@ -10,6 +10,97 @@ You can download the latest version of this application for MacOS, Windows, and 
 
 There is currently an [open PR](https://github.com/barryvdh/laravel-debugbar/pull/1141) on the Laravel DebugBar repository, that explains how to connect the Laravel DebugBar with the companion app.
 
+In the meantime, you can use this custom provider:
+
+```php
+<?php
+namespace App;
+
+use DebugBar\Storage\StorageInterface;
+
+class AppStorage implements StorageInterface
+{
+    protected $socket;
+    /**
+     * @inheritDoc
+     */
+    function save($id, $data)
+    {
+        $socketIsFresh = !$this->socket;
+        if (!$this->socket = $this->socket ?: $this->createSocket()) {
+            return false;
+        }
+        $encodedPayload = json_encode([
+            'id' => $id,
+            'base_path' => base_path(),
+            'app' => config('app.name'),
+            'data' => $data,
+        ]);
+        $encodedPayload = strlen($encodedPayload).'#'.$encodedPayload;
+        set_error_handler([self::class, 'nullErrorHandler']);
+        try {
+            if (-1 !== stream_socket_sendto($this->socket, $encodedPayload)) {
+                return true;
+            }
+            if (!$socketIsFresh) {
+                stream_socket_shutdown($this->socket, \STREAM_SHUT_RDWR);
+                fclose($this->socket);
+                $this->socket = $this->createSocket();
+            }
+            if (-1 !== stream_socket_sendto($this->socket, $encodedPayload)) {
+                return true;
+            }
+        } finally {
+            restore_error_handler();
+        }
+    }
+    private static function nullErrorHandler($t, $m)
+    {
+        // no-op
+    }
+    protected function createSocket()
+    {
+        set_error_handler([self::class, 'nullErrorHandler']);
+        try {
+            return stream_socket_client('tcp://'.config('debugbar.storage.host', '127.0.0.1').':'.config('debugbar.storage.port', 2304));
+        } finally {
+            restore_error_handler();
+        }
+    }
+    /**
+     * @inheritDoc
+     */
+    function get($id)
+    {
+        //
+    }
+    /**
+     * @inheritDoc
+     */
+    function find(array $filters = array(), $max = 20, $offset = 0)
+    {
+        //
+    }
+    /**
+     * @inheritDoc
+     */
+    function clear()
+    {
+        //
+    }
+}
+```
+
+Just place it in you `app` directory and configure the debugbar in your `config/debugbar.php` file like this:
+
+```php
+'storage' => [
+    'enabled'    => true,
+    'driver'     => 'custom', // redis, file, pdo, custom
+    'provider'   => \App\AppStorage::class, // Instance of StorageInterface for custom driver
+],
+```
+
 ### Contributing
 
 To get the application running locally, first install all required dependencies using `yarn`.

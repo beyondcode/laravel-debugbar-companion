@@ -1,0 +1,72 @@
+{
+  "name": "laravel-debugbar-companion",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "electron:build": "vue-cli-service electron:build",
+    "electron:serve": "vue-cli-service electron:serve",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps",
+    "build:osx": "yarn electron:build -p never",
+    "build:win": "yarn electron:build -p never -- --win  --x64 --ia32",
+    "build:linux": "yarn electron:build -p never -- --linux",
+    "build:all": "yarn run build:osx && yarn run build:win && yarn run build:linux"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/beyondcode/laravel-debugbar-companion"
+  },
+  "main": "background.js",
+  "dependencies": {
+    "@tailwindcss/forms": "^0.2.1",
+    "core-js": "^3.6.5",
+    "electron-store": "^6.0.1",
+    "json-socket": "^0.3.0",
+    "sql-formatter": "^2.3.3",
+    "vue": "^2.6.11",
+    "vue-highlightjs": "^1.3.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.0.2",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "autoprefixer": "^9",
+    "babel-eslint": "^10.1.0",
+    "dotenv": "^8.2.0",
+    "electron": "^11.0.0",
+    "electron-devtools-installer": "^3.1.0",
+    "electron-notarize": "^1.0.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "postcss": "^7",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "vue-cli-plugin-electron-builder": "~2.0.0-rc.5",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {},
+    "globals": {
+      "mainStorage": "writable"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

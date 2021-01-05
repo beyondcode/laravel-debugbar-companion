@@ -13,7 +13,11 @@
     "build:osx": "yarn electron:build -p never",
     "build:win": "yarn electron:build -p never -- --win  --x64 --ia32",
     "build:linux": "yarn electron:build -p never -- --linux",
-    "build:all": "yarn run build:osx && yarn run build:win && yarn run build:linux"
+    "build:all": "yarn run build:osx && yarn run build:win && yarn run build:linux",
+    "publish:osx": "yarn electron:build -p always",
+    "publish:win": "yarn electron:build -- --win  --x64 --ia32 -p always",
+    "publish:linux": "yarn electron:build -p always -- --linux -p always",
+    "publish:all": "yarn run publish:osx && yarn run publish:win && yarn run publish:linux"
   },
   "repository": {
     "type": "git",

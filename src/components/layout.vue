@@ -106,7 +106,7 @@
                                 label="Livewire"
                                 tab="livewire"
                                 :activeTab="activeTab"
-                                :count="selectedRequest.data.livewire.count"
+                                :count="selectedRequest.data.livewire ? selectedRequest.data.livewire.count : 0"
                                 @click="setTab('livewire')"
                             />
                             <tab

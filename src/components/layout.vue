@@ -20,7 +20,7 @@
 
 'storage' => [
     'enabled'    => true,
-    'driver'     => 'app',
+    'driver'     => 'socket',
     'path'       => storage_path('debugbar'),
     'connection' => null,
     'hostname'   => '127.0.0.1',

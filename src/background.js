@@ -27,7 +27,7 @@ function startServer() {
 
   debugBarServer = net.createServer();
 
-  debugBarServer.listen(mainStorage.get('port'), '127.0.0.1', () => {
+  debugBarServer.listen(mainStorage.get('port'), '0.0.0.0', () => {
     console.log('TCP Server is running on port ' + mainStorage.get('port'));
   });
 

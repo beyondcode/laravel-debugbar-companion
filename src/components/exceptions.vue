@@ -19,16 +19,14 @@
                                   class="font-mono text-gray-800 text-xs block">
                                 {{ exception.file }}#{{ exception.line }}
                             </span>
-                            <code>
-                                <ul class="bg-gray-100">
-                                    <li
-                                        class="text-gray-800 text-xs"
-                                        v-for="(line, lineKey) in exception.surrounding_lines"
-                                        :key="`exception${key}_${lineKey}`">
-                                        {{ line }}
-                                    </li>
-                                </ul>
-                            </code>
+                            <div class="mt-2 bg-gray-100">
+                                <span
+                                    class="text-gray-800 text-xs block whitespace-pre"
+                                    v-for="(line, lineKey) in exception.surrounding_lines"
+                                    :key="`exception${key}_${lineKey}`">
+                                    {{ sanitizeString(line) }}
+                                </span>
+                            </div>
                             <div class="pt-2">
                                 <span class="font-bold">Stack trace:</span>
                                 <ul>
@@ -56,29 +54,18 @@ import fileMixin from "@/mixins/fileMixin";
 export default {
     props: ['selectedRequest'],
     mixins: [fileMixin],
-    data() {
-        return {
-            filteredLabels: []
-        };
-    },
-    mounted() {
-        this.applySymfonyJS();
-    },
     computed: {
         exceptions() {
             return this.selectedRequest.data.exceptions.exceptions
         },
     },
     methods: {
-        applySymfonyJS() {
-            document.querySelectorAll('.sf-dump').forEach(element => {
-                window.Sfdump(element.id);
-            });
-        },
-
         stackTraceLines(stackTrace) {
             return stackTrace.split('\n');
+        },
 
+        sanitizeString(string) {
+            return string.replace(/\r?\n|\r|\n/g, '');
         }
     }
 }

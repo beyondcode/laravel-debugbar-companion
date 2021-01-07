@@ -4,14 +4,20 @@
         class="h-10 bg-gray-50 flex items-center justify-center text-center cursor-pointer border-b text-sm relative"
         style="-webkit-app-region: drag">
         Laravel DebugBar
-            <button @click="openSettings">
-                <svg 
-                class="h-4 w-4 text-gray-500 hover:text-gray-700 focus:text-gray-900 cursor-pointer absolute right-4 top-3"
-                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-            </button>
+            <div class="flex justify-center items-center absolute right-4 top-3">
+                <button @click="openSettings">
+                    <svg 
+                    class="h-4 w-4 text-gray-500 hover:text-gray-700 focus:text-gray-900 cursor-pointer"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+                <div class="ml-2">
+                    <input id="alwaysOnTop" value="1" class="form-checkbox rounded" type="checkbox" @change="toggleAlwaysOnTop($event)" />
+                    <label class="text-gray-600 text-xs ml-2" for="alwaysOnTop">Always on top</label>
+                </div>
+            </div>
         </div>
         <div class="w-full flex-1" v-if="this.requests.length === 0">
             <Empty :text="`There are no requests yet. Please configure the Laravel DebugBar to get started.<br>
@@ -159,7 +165,7 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import Views from './views';
 import Queries from './queries';
 import Models from './models';
@@ -219,6 +225,10 @@ export default {
         }
     },
     methods: {
+        toggleAlwaysOnTop(event) {
+            remote.getCurrentWindow().setAlwaysOnTop(event.target.checked);
+        },
+
         clearRequests() {
             this.requests = this.requests.filter(req => {
                 return req.app !== this.selectedApp;
